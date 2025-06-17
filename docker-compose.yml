@@ -3,7 +3,7 @@ services:
     build: .
     container_name: finwise-api-gateway
     ports:
-      - "9903:8080"
+      - "9903:443"
     networks:
       - finwise-network
 
