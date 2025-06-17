@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/*.jar /app/finwise-api-gateway.jar
 
 # Exposer le port sur lequel l’application écoute
-EXPOSE 9902
+EXPOSE 9903
 
 # Commande pour exécuter l’application Spring Boot
 ENTRYPOINT ["java", "-jar", "/app/finwise-api-gateway.jar"]
