@@ -1,0 +1,12 @@
+services:
+  config-server:
+    build: .
+    container_name: finwise-discovery-server
+    ports:
+      - "9902:8080"
+    networks:
+      - finwise-network
+
+networks:
+  finwise-network:
+    driver: bridge
