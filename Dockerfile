@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copier le fichier jar de l’application dans le conteneur
 COPY target/*.jar /app/finwise-api-gateway.jar
-#COPY src/main/resources/keystore.p12 /app/keystore.p12
+#COPY src/main/resources/local-ssl.p12 /app/local-ssl.p12
 
 # Exposer le port sur lequel l’application écoute
 EXPOSE 9903

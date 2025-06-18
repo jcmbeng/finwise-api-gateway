@@ -1,12 +1,12 @@
 services:
   finwise:
     build: .
+    networks:
+      - finwise-network
     container_name: api-gateway
     ports:
       - "9903:443"
-    networks:
-      - finwise-network
 
 networks:
   finwise-network:
-    driver: bridge
+    external: true

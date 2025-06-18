@@ -1,5 +1,5 @@
 spring:
   application:
     name: finwise-api-gateway
-  config:
-    import: optional:configserver:http://localhost:9901
+  profiles:
+    active: dev
