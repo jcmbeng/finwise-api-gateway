@@ -30,7 +30,12 @@ The **Finwise API Gateway** is the unified entry point for all Finwise microserv
 Use Maven to clean the project:
 
 ```bash
-./mvn clean install
+	mvn clean
+```
+
+
+```bash
+	mvn clean install
 ```
 
 ## 📦 Build the Project
@@ -38,17 +43,17 @@ Use Maven to clean the project:
 Use Maven to build the project:
 
 ```bash
-./mvn clean package
+	mvn clean package
 ```
 ## 🐳 Docker 
 
 Build Docker Image
 
 ```bash
-docker build -t finwise-api-gateway:latest .
+	docker build -t finwise-api-gateway:latest .
 ```
 
 Run with Docker Compose
 ```bash
-docker compose up -d
+	docker compose up -d
 ```
