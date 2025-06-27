@@ -40,3 +40,18 @@ logging:
   level:
     org.springframework.security: DEBUG
     org.springframework.web.server.adapter.HttpWebHandlerAdapter: TRACE
+
+
+security:
+  permit-all-paths:
+    - /api/public/**
+    - /actuator/health
+  role-based-routes:
+    - path: /api/products/**
+      roles:
+        - PRODUCT_MANAGER
+        - ADMIN
+    - path: /api/cars/**
+      roles:
+        - CAR_MANAGER
+        - ADMIN

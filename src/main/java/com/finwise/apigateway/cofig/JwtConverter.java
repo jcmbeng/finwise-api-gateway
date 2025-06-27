@@ -5,15 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
-
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -41,6 +41,7 @@ public class JwtConverter implements Converter<Jwt, Mono<AbstractAuthenticationT
                 .map(claims -> (List<String>) claims.get("roles"))
                 .orElse(List.of());
 
+        logger.debug("roles: {}", roles);
 
         return roles.stream()
                 .map(role -> "ROLE_" + role) // Important: préfixer avec "ROLE_"

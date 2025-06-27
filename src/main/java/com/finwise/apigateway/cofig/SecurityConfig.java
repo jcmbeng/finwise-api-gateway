@@ -1,24 +1,14 @@
 package com.finwise.apigateway.cofig;
 
 
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
-import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-
-import java.util.logging.Logger;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -27,16 +17,30 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, SecurityPathsProperties config) {
+
+
+        http.authorizeExchange(exchange -> {
+            // permitAll
+            config.getPermitAllPaths().forEach(path ->
+                    exchange.pathMatchers(path).permitAll()
+            );
+
+            // pathMatchers avec rôles
+            config.getRoleBasedRoutes().forEach(route -> {
+                String[] roles = route.getRoles().stream()
+                        .map(role -> "ROLE_" + role) // important : le prefixe ROLE_
+                        .toArray(String[]::new);
+
+                exchange.pathMatchers(route.getPath()).hasAnyAuthority(roles);
+            });
+
+            // tout le reste
+            exchange.anyExchange().denyAll();
+        });
+
+
         http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/eureka/**").permitAll()              // public
-                        .pathMatchers("/api/cars/**").permitAll()              // public
-                        .pathMatchers("/api/products/**").hasRole("CAR_MANAGER")             // sécurisé
-                        .pathMatchers("/api/admin/**").hasRole("admin")           // admin only
-                        .anyExchange().authenticated()
-                )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(new JwtConverter()))
                 );
