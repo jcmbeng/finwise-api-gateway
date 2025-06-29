@@ -1,22 +1,18 @@
 name: Build and Deploy Api GateWay
 
 on:
-#  push:
-#    branches:
-#      - develop
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy to (dev, prod)'
+        description: 'Environment (dev or prod)'
         required: true
-        default: 'develop'
+        type: choice
+        options:
+          - dev
+          - prod
       branch:
         description: 'Branch to build'
         required: false
-        type: choice
-        options:
-          - main
-          - develop
         default: 'develop'
 
 #on:
