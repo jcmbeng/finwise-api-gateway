@@ -13,7 +13,11 @@ on:
       branch:
         description: 'Branch to build'
         required: false
-        default: 'main'
+        type: choice
+        options:
+          - main
+          - develop
+        default: 'develop'
 
 #on:
 #  push:
