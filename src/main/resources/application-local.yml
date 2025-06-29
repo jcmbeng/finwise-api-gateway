@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      enabled: false
+    gateway:
+      server:
+        webflux:
+          routes[0]:
+            id: car-service
+            uri: lb://car-service
+            predicates[0]: Path=/api/cars/**
+          routes[1]:
+            id: product-service
+            uri: lb://product-service
+            predicates[0]: Path=/api/products/**
+          routes[2]:
+            id: discovery-server
+            uri: lb://discovery-server
+            predicates[0]: Path=/eureka**
+    discovery:
+      locator:
+        enabled: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${gateway.keycloak.hostname}:${gateway.keycloak.port}/realms/${gateway.keycloak.realm-name}
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${gateway.eureka.hostname}:${gateway.eureka.port}/eureka
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web.server.adapter.HttpWebHandlerAdapter: TRACE
+
+
+security:
+  permit-all-paths:
+    - /api/public/**
+    - /actuator/health
+  role-based-routes:
+    - path: /api/products/**
+      roles:
+        - PRODUCT_MANAGER
+        - ADMIN
+    - path: /api/cars/**
+      roles:
+        - CAR_MANAGER
+        - ADMIN
+
+
+gateway:
+  eureka:
+    hostname: discovery-server
+    port: 8080
+  config-server:
+    hostname: config-server
+    port: 8080
+  keycloak:
+    hostname: keycloak-server
+    port: 9090
+    realm-name: finwise-realm
